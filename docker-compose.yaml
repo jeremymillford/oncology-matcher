@@ -1,38 +1,39 @@
+
+
 services:
-  db:
-    image: postgres:14
+  # PostgreSQL Database
+  postgres:
+    image: postgres:latest
+    container_name: postgres_server
     restart: always
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db_name
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql   # Updated mount point
+      - ./db-init-scripts:/docker-entrypoint-initdb.d  # SQL init scripts
 
+  # Backend Service (FastAPI)
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://myuser:mypassword@db:5432/mydatabase
+      - postgres
 
+  # Frontend Service (React)
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     ports:
-      - "5173:80"
-    depends_on:
-      - backend
+      - "3000:3000"
+    stdin_open: true
+    tty: true
 
 volumes:
   postgres_data:

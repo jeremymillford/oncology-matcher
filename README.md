@@ -25,3 +25,5 @@ gene-app/
 │   ├── public/
 │   │   ├── index.html
 ├── docker-compose.yml
+
+docker exec -it postgres_server psql -U user -d db_name

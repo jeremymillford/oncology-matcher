@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pandas
+matplotlib
+sqlalchemy
+psycopg2-binary
+python-multipart

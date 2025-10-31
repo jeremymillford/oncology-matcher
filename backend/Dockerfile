@@ -1,14 +1,13 @@
-# Use Python base image
-FROM python:3.11-slim
+FROM python:3.9
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy dependencies
-COPY requirements.txt .
+COPY app/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy backend app files
+COPY app/ ./app
 
-# Start FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Command to start FastAPI server
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
